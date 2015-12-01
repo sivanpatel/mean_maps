@@ -1,7 +1,8 @@
 angular.module('gservice', [])
-    .factory('gservice', function($http){
+    .factory('gservice', function($rootScope, $http){
         var googleMapService = {};
-
+        googleMapService.clickLat = 0;
+        googleMapService.clickLong = 0;
         var locations = [];
 
         var selectedLat = 39.50;
@@ -81,12 +82,28 @@ var initialize = function(latitude, longitude) {
     var initialLocation = new google.maps.LatLng(latitude, longitude);
     var marker = new google.maps.Marker({
         position: initialLocation,
-        animation: google.maps.Animation.BOUNCE,
         map: map,
         icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
     });
     lastMarker = marker;
+    
+    map.panTo(new google.maps.LatLng(latitude, longitude));
 
+    google.maps.event.addListener(map, 'click', function(e) {
+      var marker = new google.maps.Marker({
+        position: e.latLng,
+          map: map,
+          icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+      });
+      if(lastMarker) {
+        lastMarker.setMap(null);
+      }
+      lastMarker = marker;
+      map.panTo(marker.postion);
+      googleMapService.clickLat = marker.getPosition().lat();
+      googleMapService.clickLong = marker.getPosition().long();
+      $rootScope.$broadcast("clicked");
+    });
 };
 
 google.maps.event.addDomListener(window, 'load',
