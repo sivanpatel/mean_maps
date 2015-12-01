@@ -48,8 +48,7 @@ angular.module('gservice', [])
                     age: user.age,
                     favlang: user.favlang
             });
-        }
-        return locations;
+        } return locations;
     };
 
 var initialize = function(latitude, longitude) {
@@ -99,6 +98,7 @@ var initialize = function(latitude, longitude) {
         lastMarker.setMap(null);
       }
       lastMarker = marker;
+      console.log(marker);
       map.panTo(marker.postion);
       googleMapService.clickLat = marker.getPosition().lat();
       googleMapService.clickLong = marker.getPosition().long();
